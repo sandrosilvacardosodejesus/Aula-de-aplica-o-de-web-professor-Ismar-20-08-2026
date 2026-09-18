@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Países</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Lado esquerdo */
+
+        .painel-esquerdo select {
+            width: 150px;
+            height: 200px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Meio */
+
+        .painel-meio {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .painel-meio button {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #btnDetalhes {
+            background-color: #007bff;
+        }
+
+        #btnDetalhes:hover {
+            background-color: #0056b3;
+        }
+
+        #btnAbrirModal {
+            background-color: #28a745;
+        }
+
+        #btnAbrirModal:hover {
+            background-color: #218838;
+        }
+
+        /* Lado direito */
+
+        .painel-direito {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 250px;
+        }
+
+        .card-info {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .card-info strong {
+            display: block;
+            color: #555;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .card-info div {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .card-info img {
+            width: 100px;
+            height: 65px;
+            object-fit: contain;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+
+        /* Modal */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 320px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #666;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .modal-acoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-acoes button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-salvar {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancelar {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Lista de países -->
+
+        <div class="painel-esquerdo">
+
+            <select id="selectPaises" size="5">
+
+                <option value="0" selected>Brasil</option>
+
+                <option value="1">Argentina</option>
+
+                <option value="2">Japão</option>
+
+                <option value="3">França</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Botões -->
+
+        <div class="painel-meio">
+
+            <button id="btnDetalhes">
+                Detalhes
+            </button>
+
+            <button id="btnAbrirModal">
+                Novo País
+            </button>
+
+        </div>
+
+
+        <!-- Informações -->
+
+        <div class="painel-direito">
+
+            <div class="card-info">
+
+                <strong>Capital</strong>
+
+                <div id="divCapital">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card-info">
+
+                <strong>Continente</strong>
+
+                <div id="divContinente">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card-info">
+
+                <strong>Idioma</strong>
+
+                <div id="divLingua">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card-info">
+
+                <strong>Bandeira</strong>
+
+                <div id="divBandeira">
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Modal -->
+
+    <div class="modal-overlay" id="modalForm">
+
+        <div class="modal-content">
+
+            <h3>Cadastrar Novo País</h3>
+
+
+            <div class="form-group">
+
+                <label for="inputPais">
+                    País:
+                </label>
+
+                <input
+                    type="text"
+                    id="inputPais"
+                    placeholder="Ex: Itália">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="inputCapital">
+                    Capital:
+                </label>
+
+                <input
+                    type="text"
+                    id="inputCapital"
+                    placeholder="Ex: Roma">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="inputContinente">
+                    Continente:
+                </label>
+
+                <input
+                    type="text"
+                    id="inputContinente"
+                    placeholder="Ex: Europa">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="inputLingua">
+                    Idioma:
+                </label>
+
+                <input
+                    type="text"
+                    id="inputLingua"
+                    placeholder="Ex: Italiano">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="inputBandeira">
+                    URL da Bandeira:
+                </label>
+
+                <input
+                    type="url"
+                    id="inputBandeira"
+                    placeholder="https://exemplo.com/bandeira.svg">
+
+            </div>
+
+
+            <div class="modal-acoes">
+
+                <button
+                    type="button"
+                    class="btn-cancelar"
+                    id="btnCancelar">
+
+                    Cancelar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-salvar"
+                    id="btnSalvar">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // ==========================================
+        // ARRAY DE OBJETOS
+        // ==========================================
+
+        const paises = [
+
+            {
+                nome: "Brasil",
+                capital: "Brasília",
+                continente: "América do Sul",
+                lingua: "Português",
+                bandeira: "https://upload.wikimedia.org/wikipedia/en/0/05/Flag_of_Brazil.svg"
+            },
+
+            {
+                nome: "Argentina",
+                capital: "Buenos Aires",
+                continente: "América do Sul",
+                lingua: "Espanhol",
+                bandeira: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Flag_of_Argentina.svg"
+            },
+
+            {
+                nome: "Japão",
+                capital: "Tóquio",
+                continente: "Ásia",
+                lingua: "Japonês",
+                bandeira: "https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg"
+            },
+
+            {
+                nome: "França",
+                capital: "Paris",
+                continente: "Europa",
+                lingua: "Francês",
+                bandeira: "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+            }
+
+        ];
+
+
+        // ==========================================
+        // PEGANDO OS ELEMENTOS DO HTML
+        // ==========================================
+
+        const selectPaises =
+            document.getElementById("selectPaises");
+
+        const btnDetalhes =
+            document.getElementById("btnDetalhes");
+
+        const btnAbrirModal =
+            document.getElementById("btnAbrirModal");
+
+        const btnCancelar =
+            document.getElementById("btnCancelar");
+
+        const btnSalvar =
+            document.getElementById("btnSalvar");
+
+        const modalForm =
+            document.getElementById("modalForm");
+
+        const divCapital =
+            document.getElementById("divCapital");
+
+        const divContinente =
+            document.getElementById("divContinente");
+
+        const divLingua =
+            document.getElementById("divLingua");
+
+        const divBandeira =
+            document.getElementById("divBandeira");
+
+
+        // ==========================================
+        // BOTÃO DETALHES
+        // ==========================================
+
+        btnDetalhes.addEventListener("click", function () {
+
+            const index = selectPaises.value;
+
+            const pais = paises[index];
+
+
+            divCapital.textContent =
+                pais.capital;
+
+
+            divContinente.textContent =
+                pais.continente;
+
+
+            divLingua.textContent =
+                pais.lingua;
+
+
+            divBandeira.innerHTML =
+                `<img src="${pais.bandeira}" 
+                alt="Bandeira de ${pais.nome}">`;
+
+        });
+
+
+        // ==========================================
+        // ABRIR MODAL
+        // ==========================================
+
+        btnAbrirModal.addEventListener("click", function () {
+
+            modalForm.style.display = "flex";
+
+        });
+
+
+        // ==========================================
+        // CANCELAR
+        // ==========================================
+
+        btnCancelar.addEventListener("click", function () {
+
+            modalForm.style.display = "none";
+
+            limparFormulario();
+
+        });
+
+
+        // ==========================================
+        // SALVAR NOVO PAÍS
+        // ==========================================
+
+        btnSalvar.addEventListener("click", function () {
+
+
+            const nome =
+                document.getElementById("inputPais").value.trim();
+
+
+            const capital =
+                document.getElementById("inputCapital").value.trim();
+
+
+            const continente =
+                document.getElementById("inputContinente").value.trim();
+
+
+            const lingua =
+                document.getElementById("inputLingua").value.trim();
+
+
+            const bandeira =
+                document.getElementById("inputBandeira").value.trim();
+
+
+            // Verificação
+
+            if (
+                !nome ||
+                !capital ||
+                !continente ||
+                !lingua ||
+                !bandeira
+            ) {
+
+                alert("Por favor, preencha todos os campos!");
+
+                return;
+
+            }
+
+
+            // ==========================================
+            // CRIANDO UM NOVO OBJETO
+            // ==========================================
+
+            const novoPais = {
+
+                nome: nome,
+
+                capital: capital,
+
+                continente: continente,
+
+                lingua: lingua,
+
+                bandeira: bandeira
+
+            };
+
+
+            // ==========================================
+            // ADICIONANDO O OBJETO AO ARRAY
+            // ==========================================
+
+            paises.push(novoPais);
+
+
+            // Pega a posição do novo país
+
+            const novoIndex =
+                paises.length - 1;
+
+
+            // ==========================================
+            // CRIANDO NOVA OPÇÃO NA LISTA
+            // ==========================================
+
+            const novaOpcao =
+                document.createElement("option");
+
+
+            novaOpcao.value =
+                novoIndex;
+
+
+            novaOpcao.textContent =
+                nome;
+
+
+            selectPaises.appendChild(novaOpcao);
+
+
+            // Seleciona o novo país
+
+            selectPaises.value =
+                novoIndex;
+
+
+            // ==========================================
+            // FECHA O MODAL
+            // ==========================================
+
+            modalForm.style.display =
+                "none";
+
+
+            // Limpa o formulário
+
+            limparFormulario();
+
+        });
+
+
+        // ==========================================
+        // FUNÇÃO PARA LIMPAR FORMULÁRIO
+        // ==========================================
+
+        function limparFormulario() {
+
+            document.getElementById("inputPais").value = "";
+
+            document.getElementById("inputCapital").value = "";
+
+            document.getElementById("inputContinente").value = "";
+
+            document.getElementById("inputLingua").value = "";
+
+            document.getElementById("inputBandeira").value = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
